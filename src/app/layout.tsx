@@ -1,0 +1,20 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "캐치주니어",
+  description: "진짜 주니어를 위한 실시간 채용 큐레이션 플랫폼",
+  manifest: "/manifest.json",
+  themeColor: "#ffffff",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  );
+}
