@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import FcmInitializer from "@/components/FcmInitializer";
 
 export const metadata: Metadata = {
   title: "캐치주니어",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <FcmInitializer />
+        {children}
+      </body>
     </html>
   );
 }
