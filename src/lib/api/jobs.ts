@@ -13,8 +13,17 @@ export interface JobPost {
   collectedAt: string;
 }
 
-export async function getJobs(): Promise<JobPost[]> {
-  const res = await fetch(`${API_BASE}/api/jobs`, { cache: "no-store" });
+export async function getJobs(params?: {
+  keyword?: string;
+  techStack?: string;
+  source?: string;
+}): Promise<JobPost[]> {
+  const query = new URLSearchParams();
+  if (params?.keyword) query.set("keyword", params.keyword);
+  if (params?.techStack) query.set("techStack", params.techStack);
+  if (params?.source) query.set("source", params.source);
+  const qs = query.toString();
+  const res = await fetch(`${API_BASE}/api/jobs${qs ? `?${qs}` : ""}`, { cache: "no-store" });
   if (!res.ok) throw new Error("공고 목록 조회 실패");
   return res.json();
 }
