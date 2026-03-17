@@ -4,7 +4,12 @@ import { getJobs } from "@/lib/api/jobs";
 import JobFilter from "@/components/JobFilter";
 
 interface Props {
-  searchParams: Promise<{ keyword?: string; techStack?: string; source?: string }>;
+  searchParams: Promise<{
+    keyword?: string;
+    techStack?: string;
+    source?: string;
+    page?: string;
+  }>;
 }
 
 const SOURCE_LABEL: Record<string, string> = {
@@ -16,7 +21,18 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export default async function JobsPage({ searchParams }: Props) {
   const params = await searchParams;
-  const jobs = await getJobs(params);
+  const currentPage = Number(params.page ?? 0);
+  const result = await getJobs({ ...params, page: currentPage, size: 20 });
+  const { content: jobs, totalElements, totalPages } = result;
+
+  function buildPageUrl(page: number) {
+    const query = new URLSearchParams();
+    if (params.keyword) query.set("keyword", params.keyword);
+    if (params.techStack) query.set("techStack", params.techStack);
+    if (params.source) query.set("source", params.source);
+    query.set("page", String(page));
+    return `/jobs?${query.toString()}`;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -32,7 +48,7 @@ export default async function JobsPage({ searchParams }: Props) {
           <JobFilter />
         </Suspense>
 
-        <p className="text-sm text-gray-500">공고 {jobs.length}건</p>
+        <p className="text-sm text-gray-500">총 {totalElements.toLocaleString()}건</p>
 
         {jobs.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
@@ -77,6 +93,30 @@ export default async function JobsPage({ searchParams }: Props) {
               </li>
             ))}
           </ul>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-2">
+            {currentPage > 0 && (
+              <Link
+                href={buildPageUrl(currentPage - 1)}
+                className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                이전
+              </Link>
+            )}
+            <span className="text-sm text-gray-500">
+              {currentPage + 1} / {totalPages}
+            </span>
+            {currentPage < totalPages - 1 && (
+              <Link
+                href={buildPageUrl(currentPage + 1)}
+                className="px-4 py-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                다음
+              </Link>
+            )}
+          </div>
         )}
       </main>
     </div>

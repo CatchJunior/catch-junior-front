@@ -36,6 +36,11 @@ export default async function JobDetailPage({ params }: Props) {
                 신입 가능
               </span>
             )}
+            {!job.isRealJunior && (
+              <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded-full font-medium">
+                경력 요구 ({job.requiredExperienceYears}년 이상)
+              </span>
+            )}
           </div>
           <h1 className="text-xl font-bold text-gray-900">{job.title}</h1>
           <p className="text-gray-500 mt-1">{job.company}</p>
@@ -43,7 +48,7 @@ export default async function JobDetailPage({ params }: Props) {
           <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
             <div>
               <dt className="text-gray-400 text-xs">마감일</dt>
-              <dd className="text-gray-700 font-medium mt-0.5">{job.deadline || "상시 채용"}</dd>
+              <dd className="text-gray-700 font-medium mt-0.5">{job.deadline ?? "상시 채용"}</dd>
             </div>
             <div>
               <dt className="text-gray-400 text-xs">수집일</dt>
