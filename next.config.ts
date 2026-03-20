@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // PWA는 next-pwa 등 라이브러리 추가 후 설정
+  output: "standalone", // Docker 배포용 (Dockerfile.front에서 사용)
 };
 
 export default nextConfig;
